@@ -35,8 +35,10 @@ logging:
   level:
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.cloud.openfeign: DEBUG
+    feign: DEBUG
+    com.ejada.product.service.client: DEBUG
 
-management:
   endpoints:
     web:
       exposure:
@@ -45,3 +47,9 @@ management:
 
 constants:
   stock-threshold: 5
+
+client:
+  user:
+    url: https://reqres.in
+    login-path: /api/login
+    create-user-path: /api/user
