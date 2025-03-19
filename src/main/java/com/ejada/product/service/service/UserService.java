@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
@@ -21,6 +23,7 @@ public class UserService {
     private final UserClient userClient;
     private final UserMapper userMapper;
     private final RestTemplate restTemplate;
+    private final WebClient.Builder webClientBuilder;
 
     @Value("${client.user.url}")
     private String userClientUrl;
@@ -42,6 +45,29 @@ public class UserService {
                         userMapper.mapToLoginClientRequest(request),
                         TokenClientResponse.class)
                 .getBody());
+    }
+
+    public TokenResponse loginWebClient(LoginRequest request) {
+        return webClientBuilder.baseUrl(userClientUrl)
+                .build()
+                .post()
+                .uri(userLoginClientPath)
+                .bodyValue(userMapper.mapToLoginClientRequest(request))
+                .retrieve()
+                .bodyToMono(TokenClientResponse.class)
+                .map(userMapper::mapToTokenResponse)
+                .block();
+    }
+
+    public Mono<TokenResponse> loginReactiveWebClient(LoginRequest request) {
+        return webClientBuilder.baseUrl(userClientUrl)
+                .build()
+                .post()
+                .uri(userLoginClientPath)
+                .bodyValue(userMapper.mapToLoginClientRequest(request))
+                .retrieve()
+                .bodyToMono(TokenClientResponse.class)
+                .map(userMapper::mapToTokenResponse);
     }
 
 }

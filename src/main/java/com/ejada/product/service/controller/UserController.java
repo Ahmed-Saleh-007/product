@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @Validated
@@ -60,5 +61,28 @@ public class UserController {
             @Valid @RequestBody LoginRequest request) {
         return ResponseEntity.status(HttpStatus.OK).body(userService.loginRestTemplate(request));
     }
+
+    @PostMapping("/login-web-client")
+    @Operation(description = "Login", summary = "Login", tags = "Users")
+    @ApiResponse(responseCode = "200", description = "Success",
+            content = @Content(schema = @Schema(implementation = TokenResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad request",
+            content = @Content(schema = @Schema(implementation = ApiBusinessErrorResponse.class)))
+    public ResponseEntity<TokenResponse> loginWebClient(
+            @Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.loginWebClient(request));
+    }
+
+    @PostMapping("/login-web-client-reactive")
+    @Operation(description = "Login", summary = "Login", tags = "Users")
+    @ApiResponse(responseCode = "200", description = "Success",
+            content = @Content(schema = @Schema(implementation = TokenResponse.class)))
+    @ApiResponse(responseCode = "400", description = "Bad request",
+            content = @Content(schema = @Schema(implementation = ApiBusinessErrorResponse.class)))
+    public Mono<TokenResponse> loginReactiveWebClient(
+            @Valid @RequestBody LoginRequest request) {
+        return userService.loginReactiveWebClient(request);
+    }
+
 
 }

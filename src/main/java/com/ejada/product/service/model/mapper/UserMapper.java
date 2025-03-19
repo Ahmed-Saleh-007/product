@@ -1,5 +1,7 @@
 package com.ejada.product.service.model.mapper;
 
+import com.ejada.product.grpc.UserGrpcRequest;
+import com.ejada.product.grpc.UserGrpcResponse;
 import com.ejada.product.service.client.user.model.reqeust.LoginClientRequest;
 import com.ejada.product.service.client.user.model.reqeust.UserClientRequest;
 import com.ejada.product.service.client.user.model.response.TokenClientResponse;
@@ -20,5 +22,9 @@ public interface UserMapper {
     UserClientRequest mapToUserClientRequest(UserRequest request);
 
     UserResponse mapToUserResponse(UserClientResponse response);
+
+    UserRequest mapToUserRequest(UserGrpcRequest grpcRequest);
+
+    UserGrpcResponse mapToUserGrpcResponse(UserResponse response);
 
 }
