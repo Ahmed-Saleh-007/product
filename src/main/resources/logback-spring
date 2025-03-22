@@ -1,0 +1,42 @@
+<!-- Rename it to logback-spring.xml to activate it -->
+
+<configuration>
+
+    <!-- Console appender: ALWAYS writes to your terminal -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Logstash appender: non‑blocking -->
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>localhost:5044</destination>
+        <ignoreExceptions>true</ignoreExceptions>
+        <reconnectionDelay>5000</reconnectionDelay>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp><fieldName>timestamp</fieldName></timestamp>
+                <logLevel><fieldName>level</fieldName></logLevel>
+                <loggerName><fieldName>logger</fieldName></loggerName>
+                <threadName><fieldName>thread</fieldName></threadName>
+                <message />
+                <stackTrace />
+            </providers>
+        </encoder>
+    </appender>
+
+    <!-- Async wrapper for Logstash to avoid blocking your app -->
+    <appender name="ASYNC_LOGSTASH" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOGSTASH"/>
+        <queueSize>512</queueSize>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <!-- Root logger → sends to both Console AND Logstash -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOGSTASH"/>
+    </root>
+
+</configuration>

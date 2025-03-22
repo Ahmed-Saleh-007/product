@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.ejada.product.grpc";
+option java_outer_classname = "UserServiceProto";
+
+package userservice;
+
+// The service definition for service-to-service calls.
+service UserService {
+  // Creates a user by calling your existing business logic.
+  rpc CreateUser (UserGrpcRequest) returns (UserGrpcResponse);
+}
+
+// The request message for creating a user.
+message UserGrpcRequest {
+  string name = 1;
+  string job = 2;
+}
+
+// The response message after creating a user.
+message UserGrpcResponse {
+  string id = 1;
+  string name = 2;
+  string job = 3;
+  string createdAt = 4;
+}

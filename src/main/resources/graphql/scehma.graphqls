@@ -1,0 +1,61 @@
+# Input type for creating a product
+input CreateProductRequest {
+    Name: String!
+    Price: Float!
+    Description: String
+    Quantity: Int!
+    CategoryId: Int!
+}
+
+# Type representing a product category
+type Category {
+    id: ID
+    name: String
+}
+
+# Response type for a created product
+type CreateProductResponse {
+    Name: String!
+    Price: Float!
+    Description: String
+    Quantity: Int!
+    Category: Category!
+}
+
+# Type for individual product details in a paginated list
+type ProductResponse {
+    Id: ID
+    Name: String
+    Description: String
+    Category: String
+    Price: Float
+    StockQuantity: Int
+    InStock: Boolean
+}
+
+# Response type for a paginated product list
+type ProductWithPagingResponse {
+    Products: [ProductResponse]!
+    TotalCount: Int!
+    PageCount: Int!
+}
+
+# Query to fetch products using filters and pagination
+type Query {
+    getProducts(
+        categoryIds: [ID]
+        minPrice: Float
+        maxPrice: Float
+        isInStock: Boolean
+        pageIndex: Int!
+        pageSize: Int!
+        sortOrder: String
+        sortField: String
+    ): ProductWithPagingResponse!
+}
+
+# Mutations for creating and soft deleting products
+type Mutation {
+    createProduct(request: CreateProductRequest!): CreateProductResponse!
+    softDelete(productId: ID!): String!
+}
